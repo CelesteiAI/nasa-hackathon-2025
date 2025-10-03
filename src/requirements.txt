@@ -26,3 +26,4 @@ catboost
 umap-learn
 PyWavelets
 shap
+requests
