@@ -324,7 +324,7 @@ class ExoplanetMLPipeline:
         plt.tight_layout()
         plt.show()
     
-    def save_best_model(self, results, model_path='best_exoplanet_model.pkl'):
+    def save_best_model(self, results, model_path='trained-models/best_exoplanet_model.pkl'):
         """
         Save the best performing model
         """
@@ -389,7 +389,7 @@ class ExoplanetMLPipeline:
 # Example usage
 if __name__ == "__main__":
     # Initialize pipeline
-    pipeline = ExoplanetMLPipeline('/home/tron/Code/nasa-hackathon-2025/cumulative_exoplanets.csv')
+    pipeline = ExoplanetMLPipeline('cumulative_exoplanets.csv')
     
     # Run the complete pipeline
     results, best_model = pipeline.run_full_pipeline()
