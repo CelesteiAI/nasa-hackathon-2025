@@ -217,3 +217,7 @@ __marimo__/
 models/*.pkl
 models/*.joblib
 temp/
+
+# Local package installs
+env/
+node_modules/
