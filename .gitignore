@@ -209,3 +209,6 @@ __marimo__/
 # Trained models
 trained-models/
 *.pkl
+
+# Node modules
+node_modules/
