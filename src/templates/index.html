@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Home Page</title>
+{% endblock %}
+
+{% block body %}
+<div>
+    <h1>Welcome to CelestiAI</h1>
+    <h2>Please upload your data below</h2>
+    <div id="file-drop">
+        <p>Drag & drop your CSV file here</p>
+    </div>
+</div>
+
+<div id="upload">
+    <h1>Welcome to CelestiAI</h1>   
+    <h3>Please enter you telescope data below</h3>
+
+    <div id="file-drop">
+        <p>Drag & drop your CSV file here</p>
+        <form action="/upload" method="post"><b>something</b></form>
+    </div>
+</div>
+
+<div id="loading">
+    <h2>Loading...</h2>
+</div>
+
+<!-- Testing results page -->
+<p>
+    (Testing) To see results, please visit: <a href="/results">Results Page</a>
+</p>
+
+<!-- JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>  <!-- Three.js import -->
+<script src="{{ url_for('static', filename='js/planets.js') }}"></script>
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+
+{% endblock %}

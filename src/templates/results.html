@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Results Page</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/results.css')}}">
+{% endblock %}
+
+{% block body %}
+
+<div id="Header">
+    <!-- Change this displayed text in js file -->
+    <h1 id="data-name">Here is your data</h1>
+</div>
+
+<div id="Menu">
+    <div id="menu-toggle">☰</div>
+    <div id="menu-items">
+        <button class="menu-button" id="upload-new">Upload New Dataset</button>
+        <button class="menu-button" id="view-previous">View Previous Data</button>
+        <button class="menu-button" id="export-data">Export Results</button>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>  <!-- Three.js import -->
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+
+{% endblock %}
