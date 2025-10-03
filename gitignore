@@ -213,10 +213,7 @@ __marimo__/
 
 
 # Project-specific
-data/*.csv
-data/kepler time-series/*.csv
+*.csv
 models/*.pkl
 models/*.joblib
-node_modules/
-universal/
 temp/
