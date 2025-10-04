@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 # from model import showresult
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+# app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 # Create uploads directory if it doesn't exist
@@ -27,6 +27,14 @@ def results(): # Page to display results
 
 @app.route('/api/upload', methods=['POST'])
 def upload(): # Endpoint for file upload
+
+    # 1. Read file from request
+    # 2. Validate file type and format
+    # 3. Save file to server
+    # 4. Return success or error response
+
+    # At some point, we will also trigger ML model processing here
+
     try:
         if 'file' not in request.files:
             return jsonify({'status': 'error', 'message': 'No file provided'}), 400
@@ -58,10 +66,11 @@ def upload(): # Endpoint for file upload
                 return jsonify({
                     'status': 'success', 
                     'message': 'File uploaded successfully',
-                    'filename': filename,
-                    'rows': row_count,
-                    'columns': col_count,
-                    'column_names': list(df.columns)
+                    "redirect": "/results"
+                    # 'filename': filename,
+                    # 'rows': row_count,
+                    # 'columns': col_count,
+                    # 'column_names': list(df.columns)
                 })
                 
             except Exception as e:

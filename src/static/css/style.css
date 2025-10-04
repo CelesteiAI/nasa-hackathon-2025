@@ -114,10 +114,63 @@ h3 {
     text-align: left;
 }
 
-.file-stats h3 {
+.file-stats h3, .file-stats h4 {
     text-align: center;
     margin-bottom: 15px;
     color: #4a90e2;
+}
+
+.preview-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.preview-header h3 {
+    color: #4a90e2;
+    margin-bottom: 10px;
+}
+
+.preview-header i {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #28a745;
+}
+
+.file-info {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.preview-actions {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.preview-actions p {
+    margin: 10px 0;
+}
+
+.upload-success-header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #28a745;
+}
+
+.upload-success-header h3 {
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+.final-actions {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    color: #28a745;
 }
 
 .column-list {
@@ -142,6 +195,18 @@ h3 {
 
 #process-btn, #retry-btn {
     background: #28a745;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+#remove-btn {
+    background: #2898a7;
     color: white;
     border: none;
     padding: 15px 30px;
