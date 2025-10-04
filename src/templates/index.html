@@ -2,84 +2,18 @@
 
 {% block head %}
     <title>Home Page - CelestiAI</title>
-    <style>
-        #content-wrapper {
-            color: white;
-            padding: 40px;
-        }
-        h1 {
-            font-size: 3em;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
-            margin-bottom: 20px;
-        }
-        h2, h3 {
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-            margin: 15px 0;
-        }
-        #file-drop {
-            background: rgba(0, 0, 0, 0.6);
-            border: 3px dashed rgba(255, 255, 255, 0.5);
-            border-radius: 15px;
-            padding: 40px;
-            margin: 20px auto;
-            max-width: 600px;
-            text-align: center;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-        }
-        #file-drop:hover {
-            background: rgba(0, 0, 0, 0.7);
-            border-color: rgba(255, 255, 255, 0.8);
-        }
-        #file-drop p {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-        #loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            margin: 20px auto;
-            max-width: 400px;
-            backdrop-filter: blur(10px);
-        }
-        a {
-            color: #4a90e2;
-            text-decoration: none;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 10px 20px;
-            border-radius: 8px;
-            display: inline-block;
-            margin: 20px;
-            backdrop-filter: blur(10px);
-        }
-        a:hover {
-            background: rgba(74, 144, 226, 0.3);
-        }
-        div > h1, div > h2, div > h3 {
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
 {% endblock %}
 
 {% block body %}
-<div>
+<div id="upload" style="margin-top: 40px;">
     <h1>Welcome to CelestiAI</h1>
-    <h2>Please upload your data below</h2>
+    <h2>Please enter your telescope data below</h2>
     <div id="file-drop">
         <p>Drag & drop your CSV file here</p>
     </div>
 </div>
 
-<div id="upload" style="margin-top: 40px;">
-    <h3>Please enter your telescope data below</h3>
-    <div id="file-drop">
-        <p>Drag & drop your CSV file here</p>
-        <form action="/upload" method="post"><b>Upload Form</b></form>
-    </div>
-</div>
 
 <div id="loading">
     <h2>Loading...</h2>
