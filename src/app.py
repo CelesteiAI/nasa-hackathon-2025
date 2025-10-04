@@ -3,6 +3,7 @@ import os
 import pandas as pd
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
+# from model import showresult
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
@@ -76,4 +77,7 @@ def get_results(): # get processed data from ML model
 
 
 if __name__ == '__main__':
+    model_path = '../Models/best_exoplanet_model (3).pkl'
+    data_path = '../data/cumulative_exoplanets.csv'
+    # showresult(model_path, data_path)
     app.run(host='0.0.0.0', port=8080, debug=True)
