@@ -291,13 +291,10 @@ if __name__ == "__main__":
     # )
 
     # NEW:
-
-    # tester = ExoplanetModelTester(
-    #     model_path='../Models/best_exoplanet_model (3).pkl',
-    #     data_path='../data/cumulative_exoplanets.csv'
-    # )
-    model_path='../Models/best_exoplanet_model (3).pkl'
-    data_path='../data/cumulative_exoplanets.csv'
-    tester = create_tester(model_path, data_path)
+    tester = ExoplanetModelTester(
+        model_path='../Models/best_exoplanet_model.pkl',
+        data_path='../data/cumulative_exoplanets.csv'
+    )
+    
     # Run complete testing
     auc_score = tester.run_full_test()
