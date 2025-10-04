@@ -212,3 +212,6 @@ trained-models/
 
 # Node modules
 node_modules/
+
+# Ignore files that where uploaded via the web interface
+uploads/
