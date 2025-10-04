@@ -116,7 +116,16 @@ function showPreview(data) {
 
             <div class="preview-actions">
                 <p><strong>Does this look correct?</strong></p>
-                <p>Review the column names below, then proceed to upload for processing.</p>
+                <p>Review the column names below, then proceed to upload for ML analysis.</p>
+                <div class="ml-pipeline-info">
+                    <h4>❔ What happens next:</h4>
+                    <ul>
+                        <li>🔍 Binary classification to detect exoplanets</li>
+                        <li>🌍 Habitability analysis for detected planets</li>
+                        <li>⭐ Top 20 candidates selected for visualization</li>
+                        <li>✨ Most habitable planets highlighted with glow effects</li>
+                    </ul>
+                </div>
             </div>
             <br>
             <p class="file-info">
@@ -128,14 +137,13 @@ function showPreview(data) {
         
         <div class="file-stats">
             <div class="column-list">
-                <p><strong>Column Names:</strong></p>
-                <ul>
-                    ${data.headers.map(col => `<li>${col || '[Empty Header]'}</li>`).join('')}
-                </ul>
+                <p><strong>Column Names (first 15):</strong></p>
+                <div class="column-grid">
+                    ${data.headers.slice(0, 15).map(col => `<span class="column-tag">${col || '[Empty Header]'}</span>`).join('')}
+                    ${data.headers.length > 15 ? `<span class="more-indicator">+${data.headers.length - 15} more columns</span>` : ''}
+                </div>
             </div>
         </div>
-
-        
     `;
 }
 
@@ -161,6 +169,16 @@ function uploadFileToServer() {
     hideAllSections();
     showLoading();
     
+    // Update loading text for ML processing
+    const loadingText = document.querySelector('#loading h2');
+    if (loadingText) {
+        loadingText.textContent = 'Analyzing Data with AI...';
+    }
+    const loadingSubtext = document.querySelector('#loading p');
+    if (loadingSubtext) {
+        loadingSubtext.textContent = 'Running ML pipeline to detect exoplanets and assess habitability. This may take a few moments.';
+    }
+    
     fetch('/api/upload', {
         method: 'POST',
         body: formData
@@ -168,15 +186,15 @@ function uploadFileToServer() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-
-            // Redirect to results page
-            console.log("Redirecting to: " + data.redirect);
-            if (data.redirect) {
-                window.location.href = data.redirect;
-            }
-
-            // showUploadSuccess(data);
-            // console.log("file name:" + currentFile.name);
+            // Show quick success message with results summary
+            showProcessingSuccess(data);
+            
+            // Redirect after showing results
+            setTimeout(() => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
+            }, 3000);
         } else {
             showError(data.message || 'Upload failed');
         }
@@ -185,6 +203,41 @@ function uploadFileToServer() {
         console.error('Error:', error);
         showError('Network error. Please try again.');
     });
+}
+
+// Show processing success with ML results summary
+function showProcessingSuccess(data) {
+    hideAllSections();
+    successSection.style.display = 'block';
+    
+    fileDetails.innerHTML = `
+        <div class="processing-success-header">
+            <h3>🎉 Analysis Complete!</h3>
+            <p>Your data has been successfully processed through our AI pipeline.</p>
+        </div>
+        
+        <div class="results-summary">
+            <h4>📊 Analysis Results:</h4>
+            <div class="result-stats">
+                <div class="stat-card">
+                    <div class="stat-number">${data.total_analyzed || 0}</div>
+                    <div class="stat-label">Objects Analyzed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.exoplanet_count || 0}</div>
+                    <div class="stat-label">Exoplanets Detected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${data.habitable_count || 0}</div>
+                    <div class="stat-label">Potentially Habitable</div>
+                </div>
+            </div>
+            <div class="success-message">
+                <p>✨ ${data.message}</p>
+                <p>🚀 Redirecting to 3D visualization in 3 seconds...</p>
+            </div>
+        </div>
+    `;
 }
 
 // Show upload success (after backend processing)

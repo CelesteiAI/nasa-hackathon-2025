@@ -44,6 +44,76 @@ canvas {
     margin-bottom: 20px;
 }
 
+/* Habitability Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 4px 0;
+}
+
+.badge.highly-habitable {
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    color: #000;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.badge.potentially-habitable {
+    background: linear-gradient(135deg, #66bb6a, #4caf50);
+    color: #fff;
+}
+
+/* Removed glow ring animation for cleaner UI */
+
+/* Enhanced Planet Cards */
+.planet-card.highly-habitable {
+    border: 2px solid #00ff88;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 204, 102, 0.1));
+}
+
+.planet-card.highly-habitable:hover {
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+    transform: translateY(-5px) scale(1.02);
+}
+
+.habitability-info {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+.planet-header h3 {
+    margin: 0 0 4px 0;
+    color: #fff;
+}
+
+.planet-id {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.summary {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary h4 {
+    color: #4a90e2;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.summary p {
+    color: #ccc;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -83,20 +153,21 @@ canvas {
 /* Planet Wheel */
 #planet-wheel {
     position: fixed;
-    bottom: 20px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
-    max-width: 800px;
-    height: 150px;
-    background: rgba(0, 0, 0, 0.8);
+    width: 85%;
+    max-width: 900px;
+    height: 140px;
+    background: rgba(0, 0, 0, 0.85);
     border-radius: 15px;
-    padding: 15px;
+    padding: 12px 20px;
     z-index: 1000;
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(74, 144, 226, 0.3);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(74, 144, 226, 0.4);
     opacity: 0;
     transition: opacity 0.5s;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 #planet-wheel.visible {
@@ -112,10 +183,12 @@ canvas {
 #planet-container {
     display: flex;
     overflow-x: auto;
-    gap: 15px;
-    padding: 10px 0;
+    overflow-y: hidden;
+    gap: 18px;
+    padding: 8px 5px 12px 5px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(74, 144, 226, 0.5) rgba(255, 255, 255, 0.1);
+    scrollbar-color: rgba(74, 144, 226, 0.6) rgba(255, 255, 255, 0.15);
+    scroll-behavior: smooth;
 }
 
 #planet-container::-webkit-scrollbar {
@@ -137,14 +210,15 @@ canvas {
 }
 
 .planet-card {
-    min-width: 120px;
-    background: rgba(255, 255, 255, 0.1);
+    min-width: 130px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.12);
     border: 2px solid transparent;
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 12px;
+    padding: 12px 8px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     color: white;
 }
 
@@ -168,13 +242,22 @@ canvas {
 
 .planet-card .planet-name {
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 4px;
+    color: #ffffff;
 }
 
 .planet-card .planet-info {
     font-size: 11px;
-    opacity: 0.8;
+    color: #e0e0e0;
+    opacity: 0.9;
+}
+
+.habitability-info {
+    font-size: 10px;
+    color: #ffffff;
+    margin-top: 4px;
+    font-weight: 500;
 }
 
 /* Info Panel */
@@ -214,11 +297,14 @@ canvas {
 
 .info-label {
     font-weight: bold;
-    opacity: 0.7;
+    color: #ffffff;
+    opacity: 0.8;
 }
 
 .info-value {
     text-align: right;
+    color: #ffffff;
+    font-weight: 500;
 }
 
 /* Controls */
