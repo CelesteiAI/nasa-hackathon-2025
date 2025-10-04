@@ -180,7 +180,7 @@ canvas {
 /* Info Panel */
 #info-panel {
     position: fixed;
-    top: 100px;
+    top: 180px;
     right: 20px;
     width: 300px;
     background: rgba(0, 0, 0, 0.8);
