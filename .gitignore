@@ -82,10 +82,6 @@ target/
 profile_default/
 ipython_config.py
 
-# File
-*.png
-*.pkl
-
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
 #   intended to run in multiple environments; otherwise, check them in:
@@ -120,7 +116,6 @@ ipython_config.py
 #pdm.toml
 .pdm-python
 .pdm-build/
-venv/
 
 # pixi
 #   Similar to Pipfile.lock, it is generally recommended to include pixi.lock in version control.
@@ -211,13 +206,12 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# Trained models
+trained-models/
+*.pkl
 
-# Project-specific
-*.csv
-models/*.pkl
-models/*.joblib
-temp/
-
-# Local package installs
-env/
+# Node modules
 node_modules/
+
+# Ignore files that where uploaded via the web interface
+uploads/

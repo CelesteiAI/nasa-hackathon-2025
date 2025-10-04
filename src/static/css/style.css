@@ -1,0 +1,253 @@
+#content-wrapper {
+    color: white;
+    padding: 40px;
+}
+
+h1 {
+    font-size: 3em;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    margin-bottom: 20px;
+}
+
+h2,
+h3 {
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    margin: 15px 0;
+}
+
+#file-drop {
+    background: rgba(0, 0, 0, 0.6);
+    border: 3px dashed rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    padding: 40px;
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+#file-drop:hover {
+    background: rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+#file-drop.dragover {
+    background: rgba(74, 144, 226, 0.3);
+    border-color: #4a90e2;
+    transform: scale(1.02);
+}
+
+#file-drop p {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+#file-select-btn {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+#file-select-btn:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+}
+
+#loading {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    margin: 20px auto;
+    max-width: 400px;
+    backdrop-filter: blur(10px);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid #4a90e2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#upload-success, #upload-error {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    margin: 20px auto;
+    max-width: 600px;
+    backdrop-filter: blur(10px);
+}
+
+#upload-success {
+    border: 2px solid #28a745;
+}
+
+#upload-error {
+    border: 2px solid #dc3545;
+}
+
+.file-stats {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.file-stats h3, .file-stats h4 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #4a90e2;
+}
+
+.preview-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.preview-header h3 {
+    color: #4a90e2;
+    margin-bottom: 10px;
+}
+
+.preview-header i {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #28a745;
+}
+
+.file-info {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.preview-actions {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.preview-actions p {
+    margin: 10px 0;
+}
+
+.upload-success-header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #28a745;
+}
+
+.upload-success-header h3 {
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+.final-actions {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    color: #28a745;
+}
+
+.column-list {
+    margin-top: 15px;
+}
+
+.column-list ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 5px;
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.column-list li {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+#process-btn, #retry-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+#remove-btn {
+    background: #2898a7;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+#retry-btn {
+    background: #6c757d;
+}
+
+#process-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+#retry-btn:hover {
+    background: #545b62;
+    transform: translateY(-2px);
+}
+
+a {
+    color: #4a90e2;
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: inline-block;
+    margin: 20px;
+    backdrop-filter: blur(10px);
+}
+
+a:hover {
+    background: rgba(74, 144, 226, 0.3);
+}
+
+div>h1,
+div>h2,
+div>h3 {
+    text-align: center;
+}

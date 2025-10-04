@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<title>Home Page - CelestiAI</title>
+<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+
+{% endblock %}
+
+{% block body %}
+<div id="upload" style="margin-top: 40px;">
+    <h1>Welcome to CelestiAI</h1>
+    <h2>Please enter your telescope data below</h2>
+    <div id="file-drop">
+        <p>Drag & drop your CSV file here</p>
+        <p><strong>or</strong></p>
+        <button id="file-select-btn" type="button">Choose File</button>
+        <input type="file" id="file-input" accept=".csv" style="display: none;">
+    </div>
+    <div id="file-info" style="display: none;"></div>
+</div>
+
+<div id="loading" style="display: none;">
+    <div class="spinner"></div>
+    <h2>Processing your data...</h2>
+    <p>Please wait while we analyze your telescope data</p>
+</div>
+
+<div id="upload-success" style="display: none;">
+    <!-- <h2>Data Preview</h2> -->
+    <div id="file-details"></div>
+    <button id="process-btn">Process Data</button>
+    <button id="remove-btn">Remove Data</button>
+</div>
+
+<div id="upload-error" style="display: none;">
+    <h2>❌ Upload Failed</h2>
+    <div id="error-message"></div>
+    <button id="retry-btn">Try Again</button>
+</div>
+
+<!-- Testing results page -->
+<div style="text-align: center; margin-top: 40px;">
+    <a href="/results">📊 View Results Page (Testing)</a>
+</div>
+
+<!-- JavaScript -->
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js"
+    }
+}
+</script>
+<script type="module" src="{{ url_for('static', filename='js/solar-system.js') }}"></script>
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+
+{% endblock %}
