@@ -389,7 +389,7 @@ class ExoplanetMLPipeline:
 # Example usage
 if __name__ == "__main__":
     # Initialize pipeline
-    pipeline = ExoplanetMLPipeline('cumulative_exoplanets.csv')
+    pipeline = ExoplanetMLPipeline('../data/cumulative_exoplanets.csv')
     
     # Run the complete pipeline
     results, best_model = pipeline.run_full_pipeline()

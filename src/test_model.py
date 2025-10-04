@@ -276,7 +276,7 @@ if __name__ == "__main__":
 
     # NEW:
     tester = ExoplanetModelTester(
-        model_path='../Models/best_exoplanet_model (3).pkl',
+        model_path='../Models/best_exoplanet_model.pkl',
         data_path='../data/cumulative_exoplanets.csv'
     )
     
