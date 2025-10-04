@@ -194,7 +194,7 @@ function uploadFileToServer() {
                 if (data.redirect) {
                     window.location.href = data.redirect;
                 }
-            }, 3000);
+            }, 20000);
         } else {
             showError(data.message || 'Upload failed');
         }
@@ -209,6 +209,8 @@ function uploadFileToServer() {
 function showProcessingSuccess(data) {
     hideAllSections();
     successSection.style.display = 'block';
+    processBtn.style.display = 'none';
+    removeBtn.style.display = 'none';
     
     fileDetails.innerHTML = `
         <div class="processing-success-header">
@@ -234,10 +236,13 @@ function showProcessingSuccess(data) {
             </div>
             <div class="success-message">
                 <p>✨ ${data.message}</p>
-                <p>🚀 Redirecting to 3D visualization in 3 seconds...</p>
+                <p>🚀 You will be redirected to the 3D visualization in 20 seconds...</p>
+                <p><b>This will only contain a snippet of the most promising candidates!</b></p>
             </div>
         </div>
     `;
+
+    
 }
 
 // Show upload success (after backend processing)
