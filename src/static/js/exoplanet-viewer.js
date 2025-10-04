@@ -99,18 +99,48 @@ const mockExoplanetData = [
 
 // ============ CREATE EXOPLANET ============
 function createExoplanet(data, index) {
+    // Calculate planet size based on radius (scale appropriately for visualization)
+    const planetSize = Math.max(0.8, Math.min(4.0, data.size));
+    
+    // Choose color based on habitability and temperature
+    let planetColor = data.color;
+    if (data.habitability_class === 'highly_habitable') {
+        planetColor = 0x00ff00; // Green for highly habitable
+    } else if (data.habitability_class === 'potentially_habitable') {
+        planetColor = 0x66bb6a; // Light green for potentially habitable
+    } else if (data.temperature > 1000) {
+        planetColor = 0xff4444; // Red for hot planets
+    } else if (data.temperature < 200) {
+        planetColor = 0x4488ff; // Blue for cold planets
+    } else {
+        planetColor = 0xffaa44; // Orange for temperate planets
+    }
+    
     // Planet mesh
-    const geometry = new THREE.SphereGeometry(data.size, 32, 32);
+    const geometry = new THREE.SphereGeometry(planetSize, 32, 32);
     const material = new THREE.MeshStandardMaterial({
-        color: data.color,
+        color: planetColor,
         roughness: 0.7,
         metalness: 0.3,
-        emissive: data.color,
-        emissiveIntensity: 0.2
+        emissive: planetColor,
+        emissiveIntensity: data.is_highly_habitable ? 0.4 : 0.2
     });
     const planet = new THREE.Mesh(geometry, material);
     planet.castShadow = true;
     planet.receiveShadow = true;
+
+    // Add special glow effect for highly habitable planets
+    let glowMesh = null;
+    if (data.is_highly_habitable) {
+        const glowGeometry = new THREE.SphereGeometry(planetSize * 1.5, 32, 32);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+            color: 0x00ff88,
+            transparent: true,
+            opacity: 0.3
+        });
+        glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+        scene.add(glowMesh);
+    }
 
     // Orbit line
     const orbitGeometry = new THREE.BufferGeometry();
@@ -125,7 +155,7 @@ function createExoplanet(data, index) {
     }
     orbitGeometry.setAttribute('position', new THREE.Float32BufferAttribute(orbitPoints, 3));
     const orbitMaterial = new THREE.LineBasicMaterial({ 
-        color: data.color,
+        color: planetColor,
         transparent: true,
         opacity: 0.4
     });
@@ -136,16 +166,25 @@ function createExoplanet(data, index) {
     // Store planet data
     const planetData = {
         mesh: planet,
+        glowMesh: glowMesh,
         distance: data.distance,
         orbitSpeed: 0.005 + (Math.random() * 0.01),
         rotationSpeed: 0.01 + (Math.random() * 0.01),
-        angle: (index / mockExoplanetData.length) * Math.PI * 2, // Distribute evenly
+        angle: (index / (data.total_count || 20)) * Math.PI * 2, // Distribute evenly
         name: data.name,
-        size: data.size,
-        color: data.color,
+        planet_id: data.planet_id,
+        kepler_name: data.kepler_name,
+        size: planetSize,
+        color: planetColor,
         probability: data.probability,
-        mass: data.mass,
-        temperature: data.temperature
+        classification_probability: data.classification_probability,
+        habitability_score: data.habitability_score,
+        habitability_class: data.habitability_class,
+        is_highly_habitable: data.is_highly_habitable,
+        features: data.features,
+        summary: data.summary,
+        mass: data.features.radius_earth_radii.toFixed(2) + ' R⊕',
+        temperature: data.features.temperature_k.toFixed(0) + 'K'
     };
 
     scene.add(planet);
@@ -230,30 +269,49 @@ function updateInfoPanel(planet) {
     const infoPanel = document.getElementById('info-panel');
     const infoContent = document.getElementById('info-content');
     
+    const habitabilityBadge = planet.is_highly_habitable ? 
+        '<span class="badge highly-habitable">🌟 Highly Habitable</span>' :
+        planet.habitability_class === 'potentially_habitable' ? 
+        '<span class="badge potentially-habitable">🌱 Potentially Habitable</span>' :
+        '<span class="badge">📊 ' + planet.habitability_class.replace('_', ' ') + '</span>';
+    
     infoContent.innerHTML = `
-        <div class="info-row">
-            <span class="info-label">Name:</span>
-            <span class="info-value">${planet.name}</span>
+        <div class="planet-header">
+            <h3>${planet.kepler_name || planet.name}</h3>
+            <p class="planet-id">${planet.planet_id}</p>
+            ${habitabilityBadge}
         </div>
         <div class="info-row">
-            <span class="info-label">Classification:</span>
-            <span class="info-value">${(planet.probability * 100).toFixed(1)}% Confidence</span>
+            <span class="info-label">Classification Confidence:</span>
+            <span class="info-value">${(planet.classification_probability * 100).toFixed(1)}%</span>
         </div>
         <div class="info-row">
-            <span class="info-label">Mass:</span>
-            <span class="info-value">${planet.mass}</span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Temperature:</span>
-            <span class="info-value">${planet.temperature}</span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Distance:</span>
-            <span class="info-value">${planet.distance} AU</span>
+            <span class="info-label">Habitability Score:</span>
+            <span class="info-value">${planet.habitability_score.toFixed(3)}</span>
         </div>
         <div class="info-row">
             <span class="info-label">Radius:</span>
-            <span class="info-value">${planet.size.toFixed(1)} R⊕</span>
+            <span class="info-value">${planet.features.radius_earth_radii.toFixed(2)} R⊕</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Temperature:</span>
+            <span class="info-value">${planet.features.temperature_k.toFixed(0)} K</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Insolation:</span>
+            <span class="info-value">${planet.features.insolation_earth_flux.toFixed(2)} S⊕</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Orbital Period:</span>
+            <span class="info-value">${planet.features.orbital_period_days.toFixed(1)} days</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Stellar Temperature:</span>
+            <span class="info-value">${planet.features.stellar_temp_k.toFixed(0)} K</span>
+        </div>
+        <div class="summary">
+            <h4>Summary</h4>
+            <p>${planet.summary}</p>
         </div>
     `;
     
@@ -267,14 +325,27 @@ function createPlanetCards() {
     exoplanets.forEach((planet, index) => {
         const card = document.createElement('div');
         card.className = 'planet-card';
+        if (planet.is_highly_habitable) {
+            card.classList.add('highly-habitable');
+        }
         card.dataset.index = index;
         
         const colorHex = '#' + planet.color.toString(16).padStart(6, '0');
         
+        const habitabilityIcon = planet.is_highly_habitable ? '🌟' : 
+                               planet.habitability_class === 'potentially_habitable' ? '🌱' : 
+                               planet.habitability_class === 'marginally_habitable' ? '📊' : '🌑';
+        
         card.innerHTML = `
-            <div class="planet-icon" style="background: ${colorHex}; box-shadow: 0 0 20px ${colorHex};"></div>
-            <div class="planet-name">${planet.name}</div>
-            <div class="planet-info">${(planet.probability * 100).toFixed(0)}% confidence</div>
+            <div class="planet-icon" style="background: ${colorHex}; box-shadow: 0 0 15px ${colorHex};">
+            </div>
+            <div class="planet-name">${planet.kepler_name || planet.name}</div>
+            <div class="planet-info">
+                ${habitabilityIcon} ${(planet.classification_probability * 100).toFixed(0)}% confidence
+            </div>
+            <div class="habitability-info">
+                Habitability: ${planet.habitability_score.toFixed(2)}
+            </div>
         `;
         
         card.addEventListener('click', () => {
@@ -298,14 +369,28 @@ function updatePlanetCards() {
 
 // ============ INITIALIZATION ============
 async function initialize() {
-    // Create exoplanets
-    mockExoplanetData.forEach((data, index) => {
-        createExoplanet(data, index);
-    });
-    
-    // Update UI
-    document.getElementById('exoplanet-count').textContent = `${exoplanets.length} confirmed exoplanets detected`;
-    createPlanetCards();
+    try {
+        // Try to load data from API first
+        const response = await fetch('/api/get_results');
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.status === 'success' && data.results.length > 0) {
+                console.log(`Loading ${data.results.length} exoplanets from API`);
+                loadExoplanetData(data.results);
+            } else {
+                console.log('No API data available, using mock data');
+                loadMockData();
+            }
+        } else {
+            console.log('API not available, using mock data');
+            loadMockData();
+        }
+        
+    } catch (error) {
+        console.log('Error loading API data, using mock data:', error);
+        loadMockData();
+    }
     
     // Show UI elements
     setTimeout(() => {
@@ -317,6 +402,79 @@ async function initialize() {
     setTimeout(() => {
         zoomToSolarSystem();
     }, 2500);
+}
+
+function loadMockData() {
+    // Convert mock data to new format for compatibility with realistic confidence scores
+    const mockData = [
+        { 
+            planet_id: 'KOI-22.01', kepler_name: 'Kepler-22b', 
+            classification_probability: 0.94, habitability_score: 0.87, habitability_class: 'highly_habitable',
+            is_highly_habitable: true, size: 2.4, distance: 40, color: 0x4a90e2,
+            features: { radius_earth_radii: 2.4, temperature_k: 295, insolation_earth_flux: 1.1, orbital_period_days: 289.9, stellar_temp_k: 5700, stellar_radius_solar: 0.97, stellar_mass_solar: 0.98 },
+            summary: 'Earth-like size and favorable temperature range, making it a promising candidate for habitability.'
+        },
+        { 
+            planet_id: 'KOI-30.01', kepler_name: 'Proxima b', 
+            classification_probability: 0.87, habitability_score: 0.72, habitability_class: 'potentially_habitable',
+            is_highly_habitable: true, size: 1.3, distance: 30, color: 0xe27b58,
+            features: { radius_earth_radii: 1.3, temperature_k: 234, insolation_earth_flux: 0.65, orbital_period_days: 11.2, stellar_temp_k: 3050, stellar_radius_solar: 0.14, stellar_mass_solar: 0.12 },
+            summary: 'Close to Earth size with appropriate stellar energy, orbiting in the habitable zone.'
+        },
+        { 
+            planet_id: 'KOI-85.01', kepler_name: 'TRAPPIST-1e', 
+            classification_probability: 0.91, habitability_score: 0.78, habitability_class: 'highly_habitable',
+            is_highly_habitable: true, size: 1.0, distance: 50, color: 0x66bb6a,
+            features: { radius_earth_radii: 1.0, temperature_k: 246, insolation_earth_flux: 0.91, orbital_period_days: 6.1, stellar_temp_k: 2550, stellar_radius_solar: 0.12, stellar_mass_solar: 0.09 },
+            summary: 'Near-Earth size with temperate conditions in a multi-planet system.'
+        },
+        { 
+            planet_id: 'KOI-123.01', kepler_name: 'HD 209458 b', 
+            classification_probability: 0.83, habitability_score: 0.23, habitability_class: 'not_habitable',
+            is_highly_habitable: false, size: 3.2, distance: 60, color: 0xffc649,
+            features: { radius_earth_radii: 3.2, temperature_k: 1449, insolation_earth_flux: 8.7, orbital_period_days: 3.5, stellar_temp_k: 6100, stellar_radius_solar: 1.1, stellar_mass_solar: 1.05 },
+            summary: 'Gas giant experiencing extreme stellar heating.'
+        }
+    ];
+    
+    loadExoplanetData(mockData);
+}
+
+function loadExoplanetData(apiData) {
+    // Clear existing planets
+    exoplanets.forEach(p => {
+        scene.remove(p.mesh);
+        if (p.glowMesh) scene.remove(p.glowMesh);
+    });
+    orbitLines.forEach(l => scene.remove(l));
+    exoplanets.length = 0;
+    orbitLines.length = 0;
+    
+    // Process API data and create planets
+    apiData.forEach((planetData, index) => {
+        // Calculate distance for visualization (spread planets in interesting orbits)
+        const baseDistance = 25 + (index * 8) + (Math.random() * 10);
+        
+        const processedData = {
+            ...planetData,
+            name: planetData.kepler_name || planetData.planet_id,
+            size: Math.max(0.8, Math.min(4.0, planetData.features.radius_earth_radii)),
+            distance: baseDistance,
+            probability: planetData.classification_probability,
+            temperature: planetData.features.temperature_k
+        };
+        
+        createExoplanet(processedData, index);
+    });
+    
+    // Update UI
+    createPlanetCards();
+    document.getElementById('exoplanet-count').textContent = `${exoplanets.length} confirmed exoplanets detected`;
+    
+    const highlyHabitable = exoplanets.filter(p => p.is_highly_habitable).length;
+    if (highlyHabitable > 0) {
+        document.getElementById('exoplanet-count').textContent += ` (${highlyHabitable} highly habitable)`;
+    }
 }
 
 // ============ CONTROLS ============
@@ -357,6 +515,14 @@ function animate() {
         planet.angle += planet.orbitSpeed * 0.01;
         planet.mesh.position.x = Math.cos(planet.angle) * planet.distance;
         planet.mesh.position.z = Math.sin(planet.angle) * planet.distance;
+        
+        // Update glow mesh position if it exists
+        if (planet.glowMesh) {
+            planet.glowMesh.position.copy(planet.mesh.position);
+            // Animate glow opacity
+            const glowIntensity = 0.3 + 0.2 * Math.sin(currentTime * 0.003);
+            planet.glowMesh.material.opacity = glowIntensity;
+        }
         
         // Self rotation
         planet.mesh.rotation.y += planet.rotationSpeed * 0.01;
@@ -405,20 +571,9 @@ animate();
 
 // ============ EXPORT FOR API INTEGRATION ============
 window.ExoplanetViewer = {
-    loadExoplanetData: function(data) {
-        // Clear existing
-        exoplanets.forEach(p => scene.remove(p.mesh));
-        orbitLines.forEach(l => scene.remove(l));
-        exoplanets.length = 0;
-        orbitLines.length = 0;
-        
-        // Load new data
-        data.forEach((planetData, index) => {
-            createExoplanet(planetData, index);
-        });
-        
-        createPlanetCards();
-        document.getElementById('exoplanet-count').textContent = `${exoplanets.length} confirmed exoplanets detected`;
+    loadExoplanetData: loadExoplanetData,
+    refreshData: function() {
+        initialize();
     }
 };
 
