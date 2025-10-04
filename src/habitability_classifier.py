@@ -251,7 +251,7 @@ class ExoplanetHabitabilityClassifier:
         print(f"  Radius: {top_candidate['koi_prad']:.2f} Earth radii")
         print(f"  Temperature: {top_candidate['koi_teq']:.0f} K")
         
-    def save_results(self, output_path='habitability_results.csv'):
+    def save_results(self, output_path='../results/habitability_results.csv'):
         """
         Save habitability analysis results
         """
