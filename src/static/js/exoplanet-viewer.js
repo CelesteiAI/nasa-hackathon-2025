@@ -469,7 +469,7 @@ function loadExoplanetData(apiData) {
     
     // Update UI
     createPlanetCards();
-    document.getElementById('exoplanet-count').textContent = `${exoplanets.length} confirmed exoplanets detected`;
+    document.getElementById('exoplanet-count').textContent = `${exoplanets.length} most promising exoplanets shown`;
     
     const highlyHabitable = exoplanets.filter(p => p.is_highly_habitable).length;
     if (highlyHabitable > 0) {
