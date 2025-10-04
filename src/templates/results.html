@@ -1,273 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exoplanet Results - NASA Hackathon 2025</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            overflow: hidden;
-            font-family: 'Arial', sans-serif;
-            background: #000;
-        }
-        canvas {
-            display: block;
-        }
-        
-        /* Loading Screen */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            color: white;
-        }
-        #loading-screen.hidden {
-            display: none;
-        }
-        .loader {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid #4a90e2;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Header */
-        #header {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            text-align: center;
-            color: white;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px 30px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-        #header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        #header p {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-        
-        /* Planet Wheel */
-        #planet-wheel {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 800px;
-            height: 150px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 15px;
-            padding: 15px;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(74, 144, 226, 0.3);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        #planet-wheel.visible {
-            opacity: 1;
-        }
-        #planet-wheel h3 {
-            color: white;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        #planet-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding: 10px 0;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(74, 144, 226, 0.5) rgba(255, 255, 255, 0.1);
-        }
-        #planet-container::-webkit-scrollbar {
-            height: 8px;
-        }
-        #planet-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-        #planet-container::-webkit-scrollbar-thumb {
-            background: rgba(74, 144, 226, 0.5);
-            border-radius: 10px;
-        }
-        #planet-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(74, 144, 226, 0.8);
-        }
-        
-        .planet-card {
-            min-width: 120px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid transparent;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: white;
-        }
-        .planet-card:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(74, 144, 226, 0.5);
-            transform: translateY(-5px);
-        }
-        .planet-card.selected {
-            background: rgba(74, 144, 226, 0.3);
-            border-color: #4a90e2;
-        }
-        .planet-card .planet-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin: 0 auto 8px;
-        }
-        .planet-card .planet-name {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        .planet-card .planet-info {
-            font-size: 11px;
-            opacity: 0.8;
-        }
-        
-        /* Info Panel */
-        #info-panel {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            width: 300px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 15px;
-            padding: 20px;
-            color: white;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(74, 144, 226, 0.3);
-            opacity: 0;
-            transition: opacity 0.5s;
-        }
-        #info-panel.visible {
-            opacity: 1;
-        }
-        #info-panel h2 {
-            font-size: 20px;
-            margin-bottom: 15px;
-            color: #4a90e2;
-        }
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .info-label {
-            font-weight: bold;
-            opacity: 0.7;
-        }
-        .info-value {
-            text-align: right;
-        }
-        
-        /* Controls */
-        #controls {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-        .control-btn {
-            display: block;
-            margin: 10px 0;
-            padding: 10px 20px;
-            background: rgba(74, 144, 226, 0.8);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-            text-decoration: none;
-            text-align: center;
-        }
-        .control-btn:hover {
-            background: rgba(74, 144, 226, 1);
-            transform: translateY(-2px);
-        }
-    </style>
-</head>
-<body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="loader"></div>
-        <h2>Loading Exoplanet Data...</h2>
-        <p>Analyzing classification results</p>
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Exoplanet Results - NASA Hackathon 2025</title>
+<link rel="stylesheet" href="{{url_for('static', filename='css/results.css')}}">
+{% endblock %}
+
+
+{% block body %}
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+    <div class="loader"></div>
+    <h2>Loading Exoplanet Data...</h2>
+    <p>Analyzing classification results</p>
+</div>
+
+<!-- Header -->
+<div id="header">
+    <h1>🌌 Exoplanet Classification Results</h1>
+    <p id="exoplanet-count">0 confirmed exoplanets detected</p>
+</div>
+
+<!-- Controls -->
+<div id="controls">
+    <a href="/" class="control-btn">← Back to Home</a>
+    <button class="control-btn" id="reset-view">Reset View</button>
+    <button class="control-btn" id="toggle-orbits">Toggle Orbits</button>
+</div>
+
+<!-- Info Panel -->
+<div id="info-panel">
+    <h2>Planet Details</h2>
+    <div id="info-content">
+        <p style="opacity: 0.6;">Select a planet to view details</p>
     </div>
-    
-    <!-- Header -->
-    <div id="header">
-        <h1>🌌 Exoplanet Classification Results</h1>
-        <p id="exoplanet-count">0 confirmed exoplanets detected</p>
-    </div>
-    
-    <!-- Controls -->
-    <div id="controls">
-        <a href="/" class="control-btn">← Back to Home</a>
-        <button class="control-btn" id="reset-view">Reset View</button>
-        <button class="control-btn" id="toggle-orbits">Toggle Orbits</button>
-    </div>
-    
-    <!-- Info Panel -->
-    <div id="info-panel">
-        <h2>Planet Details</h2>
-        <div id="info-content">
-            <p style="opacity: 0.6;">Select a planet to view details</p>
-        </div>
-    </div>
-    
-    <!-- Planet Wheel Selector -->
-    <div id="planet-wheel">
-        <h3>📊 Detected Exoplanets - Scroll to explore →</h3>
-        <div id="planet-container"></div>
-    </div>
-    
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-            "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js"
-        }
+</div>
+
+<!-- Planet Wheel Selector -->
+<div id="planet-wheel">
+    <h3>📊 Detected Exoplanets - Scroll to explore →</h3>
+    <div id="planet-container"></div>
+</div>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js"
     }
-    </script>
-    <script type="module" src="{{ url_for('static', filename='js/exoplanet-viewer.js') }}"></script>
-</body>
-</html>
+}
+</script>
+<script type="module" src="{{ url_for('static', filename='js/exoplanet-viewer.js') }}"></script>
+
+{% endblock %}
