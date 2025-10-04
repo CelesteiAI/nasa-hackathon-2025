@@ -118,7 +118,7 @@ function showPreview(data) {
                 <p><strong>Does this look correct?</strong></p>
                 <p>Review the column names below, then proceed to upload for ML analysis.</p>
                 <div class="ml-pipeline-info">
-                    <h4>🤖 What happens next:</h4>
+                    <h4>❔ What happens next:</h4>
                     <ul>
                         <li>🔍 Binary classification to detect exoplanets</li>
                         <li>🌍 Habitability analysis for detected planets</li>

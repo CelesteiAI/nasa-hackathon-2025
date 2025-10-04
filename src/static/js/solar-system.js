@@ -177,12 +177,7 @@ infoDiv.style.padding = '15px';
 infoDiv.style.borderRadius = '10px';
 infoDiv.style.fontFamily = 'Arial, sans-serif';
 infoDiv.style.fontSize = '14px';
-infoDiv.innerHTML = `
-    <h2 style="margin: 0 0 10px 0;">🌌 Solar System 3D</h2>
-    <p style="margin: 5px 0;">Use mouse to rotate and zoom</p>
-    <p style="margin: 5px 0;">Click on planets to see info</p>
-    <div id="planet-info" style="margin-top: 10px; font-size: 12px;"></div>
-`;
+
 document.body.appendChild(infoDiv);
 
 // Animation
