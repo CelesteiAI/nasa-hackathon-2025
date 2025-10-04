@@ -3,9 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        canvas {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            display: block;
+        }
+        #content-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+        }
+    </style>
     {% block head %}{% endblock %}
 </head>
 <body>
-    {% block body %}{% endblock %}
+    <div id="content-wrapper">
+        {% block body %}{% endblock %}
+    </div>
 </body>
 </html>
