@@ -306,7 +306,8 @@ class ExoplanetHabitabilityClassifier:
 # Example usage
 if __name__ == "__main__":
     # Initialize habitability analyzer
-    analyzer = ExoplanetHabitabilityClassifier('/home/tron/Code/nasa-hackathon-2025/cumulative_exoplanets.csv')
-    
+    # analyzer = ExoplanetHabitabilityClassifier('/home/tron/Code/nasa-hackathon-2025/cumulative_exoplanets.csv')
+    analyzer = ExoplanetHabitabilityClassifier('../data/cumulative_exoplanets.csv')
+
     # Run complete analysis
     results, top_candidates = analyzer.run_full_analysis()

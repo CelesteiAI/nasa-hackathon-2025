@@ -269,9 +269,15 @@ class ExoplanetModelTester:
 # Example usage
 if __name__ == "__main__":
     # Initialize tester
+    # tester = ExoplanetModelTester(
+    #     model_path='/home/tron/Code/nasa-hackathon-2025/Models/best_exoplanet_model.pkl',
+    #     data_path='/home/tron/Code/nasa-hackathon-2025/cumulative_exoplanets.csv'
+    # )
+
+    # NEW:
     tester = ExoplanetModelTester(
-        model_path='/home/tron/Code/nasa-hackathon-2025/Models/best_exoplanet_model.pkl',
-        data_path='/home/tron/Code/nasa-hackathon-2025/cumulative_exoplanets.csv'
+        model_path='../Models/best_exoplanet_model (3).pkl',
+        data_path='../data/cumulative_exoplanets.csv'
     )
     
     # Run complete testing
