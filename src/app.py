@@ -63,6 +63,9 @@ def upload(): # Endpoint for file upload
                 print(f"Rows: {row_count}, Columns: {col_count}")
                 print(f"Columns: {list(df.columns)}")
                 
+                # Call ML model processing function here
+                # Call ML exoplanet 
+
                 return jsonify({
                     'status': 'success', 
                     'message': 'File uploaded successfully',
@@ -82,6 +85,9 @@ def upload(): # Endpoint for file upload
 
 @app.route('/api/get_results', methods=['GET'])
 def get_results(): # get processed data from ML model
+
+    # Get results from ML model processing and return as JSON
+
     return {'results': []}
 
 
