@@ -266,6 +266,22 @@ class ExoplanetModelTester:
         
         return auc_score
 
+
+def create_tester(model_path, data_path):
+    """
+    Create and return an ExoplanetModelTester instance.
+
+    Args:
+        model_path (str): Path to the saved model file.
+        data_path (str): Path to the data file.
+
+    Returns:
+        ExoplanetModelTester: Initialized tester object.
+    """
+    tester = ExoplanetModelTester(model_path, data_path)
+    return tester
+
+
 # Example usage
 if __name__ == "__main__":
     # Initialize tester
@@ -275,10 +291,13 @@ if __name__ == "__main__":
     # )
 
     # NEW:
-    tester = ExoplanetModelTester(
-        model_path='../Models/best_exoplanet_model (3).pkl',
-        data_path='../data/cumulative_exoplanets.csv'
-    )
-    
+
+    # tester = ExoplanetModelTester(
+    #     model_path='../Models/best_exoplanet_model (3).pkl',
+    #     data_path='../data/cumulative_exoplanets.csv'
+    # )
+    model_path='../Models/best_exoplanet_model (3).pkl'
+    data_path='../data/cumulative_exoplanets.csv'
+    tester = create_tester(model_path, data_path)
     # Run complete testing
     auc_score = tester.run_full_test()
