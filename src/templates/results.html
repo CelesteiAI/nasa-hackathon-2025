@@ -1,28 +1,55 @@
 {% extends 'base.html' %}
 
 {% block head %}
-    <title>Results Page</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/results.css')}}">
+<title>Exoplanet Results - NASA Hackathon 2025</title>
+<link rel="stylesheet" href="{{url_for('static', filename='css/results.css')}}">
 {% endblock %}
+
 
 {% block body %}
 
-<div id="Header">
-    <!-- Change this displayed text in js file -->
-    <h1 id="data-name">Here is your data</h1>
+<!-- Loading Screen -->
+<div id="loading-screen">
+    <div class="loader"></div>
+    <h2>Loading Exoplanet Data...</h2>
+    <p>Analyzing classification results</p>
 </div>
 
-<div id="Menu">
-    <div id="menu-toggle">☰</div>
-    <div id="menu-items">
-        <button class="menu-button" id="upload-new">Upload New Dataset</button>
-        <button class="menu-button" id="view-previous">View Previous Data</button>
-        <button class="menu-button" id="export-data">Export Results</button>
+<!-- Header -->
+<div id="header">
+    <h1>🌌 Exoplanet Classification Results</h1>
+    <p id="exoplanet-count">0 confirmed exoplanets detected</p>
+</div>
+
+<!-- Controls -->
+<div id="controls">
+    <a href="/" class="control-btn">← Back to Home</a>
+    <button class="control-btn" id="reset-view">Reset View</button>
+    <button class="control-btn" id="toggle-orbits">Toggle Orbits</button>
+</div>
+
+<!-- Info Panel -->
+<div id="info-panel">
+    <h2>Planet Details</h2>
+    <div id="info-content">
+        <p style="opacity: 0.6;">Select a planet to view details</p>
     </div>
 </div>
 
-<!-- JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>  <!-- Three.js import -->
-<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+<!-- Planet Wheel Selector -->
+<div id="planet-wheel">
+    <h3>📊 Detected Exoplanets - Scroll to explore →</h3>
+    <div id="planet-container"></div>
+</div>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js"
+    }
+}
+</script>
+<script type="module" src="{{ url_for('static', filename='js/exoplanet-viewer.js') }}"></script>
 
 {% endblock %}
