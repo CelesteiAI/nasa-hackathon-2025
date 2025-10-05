@@ -68,13 +68,15 @@ nasa-hackathon-2025/
 
 # 🌠 Reflection
 
-Leading this project as a first-year Computer Science student was an incredible experience. Together, we built a fully functional exoplanet detection web app, hosted live with a custom domain.
-This project taught me about:
-Project leadership and task allocation under time pressure
-Designing and implementing machine learning algorithms for real-world data
-Collaborating across specialized roles, from backend and Git management to frontend visualization
-Balancing technical execution with presentation and usability
-CelestAI.vip demonstrates the power of collaboration, technical skill, and leadership, while making exoplanet science accessible to everyone.
+Leading this project as a first-year Computer Science student was an incredible experience. Together, we built a **fully functional web app with live deployment**.
+
+**Key learnings:**
+- **Leadership:** managing tasks and guiding the team under time pressure
+- **Machine Learning:** designing and implementing algorithms for real-world data
+- **Collaboration:** working across specialized roles (backend, frontend, Git)
+- **Execution & Usability:** balancing technical depth with user experience
+
+CelestAI.vip demonstrates the power of **collaboration, technical skill, and leadership**, while making exoplanet science accessible to everyone.
 
 ---
 
