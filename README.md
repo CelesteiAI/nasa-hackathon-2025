@@ -1,5 +1,7 @@
-# Nasa Hackathon 2025
+# Exoplanet Detection Powered by Machine Learning — NASA Space Apps Auckland 2025 (2nd Place)
 
+This project was built during the NASA Space Apps Challenge 2025 (Auckland), where our team placed 2nd overall.
+We focused on creating a fully functional prototype, hosted live with a custom domain, rather than just a concept presentation.
 
 ## Features
 
