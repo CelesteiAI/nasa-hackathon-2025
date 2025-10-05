@@ -15,6 +15,10 @@ const processBtn = document.getElementById('process-btn');
 const removeBtn = document.getElementById('remove-btn');
 const retryBtn = document.getElementById('retry-btn');
 
+const disclaimer = document.getElementById('disclaimer');
+const disclaimerDetails = document.getElementById('disclaimer-details');
+const testDataBtn = document.getElementById('test-data-btn');
+
 // Store the current file for later upload
 let currentFile = null;
 let csvData = null;
@@ -364,6 +368,53 @@ retryBtn.addEventListener('click', () => {
     showUploadForm();
     fileInput.value = ''; // Clear file input
 });
+
+
+// Demo data button
+testDataBtn.addEventListener('click', () => {
+    uploadDemoData();
+});
+
+// Function to upload demo KOI data
+function uploadDemoData() {
+    showLoading();
+    
+    // Update loading text for demo data
+    const loadingText = document.querySelector('#loading h2');
+    if (loadingText) {
+        loadingText.textContent = 'Loading Demo KOI Data...';
+    }
+    const loadingSubtext = document.querySelector('#loading p');
+    if (loadingSubtext) {
+        loadingSubtext.textContent = 'Preparing NASA Kepler Objects of Interest dataset for analysis.';
+    }
+    
+    // Send request to load demo data
+    fetch('/api/upload', {
+        method: 'POST',
+        body: "demo"
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Show quick success message with results summary
+            showProcessingSuccess(data);
+            
+            // Redirect after showing results
+            setTimeout(() => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
+            }, 5000);
+        } else {
+            showError(data.message || 'Upload failed');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showError('Network error. Please try again.');
+    });
+}
 
 // Initialize
 showUploadForm();

@@ -348,3 +348,53 @@ div>h3 {
     color: #2e7d32;
     font-weight: 500;
 }
+
+/* Disclaimer panel in top left */
+.disclaimer-panel {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    max-width: 300px;
+    border: 2px solid rgba(255, 193, 7, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.disclaimer-content h3 {
+    color: #ffc107;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.disclaimer-content p {
+    color: white;
+    font-size: 0.9em;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.demo-btn {
+    background: linear-gradient(135deg, #ffc107, #ff8f00);
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.demo-btn:hover {
+    background: linear-gradient(135deg, #ffca28, #ffa000);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}

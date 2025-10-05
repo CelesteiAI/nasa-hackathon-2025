@@ -8,6 +8,17 @@
 {% endblock %}
 
 {% block body %}
+
+<!-- Disclaimer in top left -->
+<div id="disclaimer" class="disclaimer-panel">
+    <div class="disclaimer-content">
+        <h3>Model Processing Notice</h3>
+        <p>Our ML model has been trained exclusively on the <strong>NASA Kepler Objects of Interest (KOI)</strong> dataset.</p>
+        <p>For best results, please use KOI-formatted data or try our demo dataset:</p>
+        <button id="test-data-btn" class="demo-btn">📊 Load Demo KOI Data</button>
+    </div>
+</div>
+
 <div id="upload" style="margin-top: 40px;">
     <h1>Welcome to CelestiAI</h1>
     <h2>Please enter your telescope data below</h2>
@@ -32,6 +43,8 @@
     <button id="process-btn">Process Data</button>
     <button id="remove-btn">Remove Data</button>
 </div>
+
+
 
 <div id="upload-error" style="display: none;">
     <h2>❌ Upload Failed</h2>
