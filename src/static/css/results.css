@@ -158,10 +158,10 @@ canvas {
     transform: translateX(-50%);
     width: 85%;
     max-width: 900px;
-    height: 140px;
+    height: 180px;
     background: rgba(0, 0, 0, 0.85);
     border-radius: 15px;
-    padding: 12px 20px;
+    padding: 12px 20px 8px 20px;
     z-index: 1000;
     backdrop-filter: blur(15px);
     border: 2px solid rgba(74, 144, 226, 0.4);
@@ -185,7 +185,9 @@ canvas {
     overflow-x: auto;
     overflow-y: hidden;
     gap: 18px;
-    padding: 8px 5px 12px 5px;
+    padding: 8px 5px 8px 5px;
+    height: 140px;
+    align-items: center;
     scrollbar-width: thin;
     scrollbar-color: rgba(74, 144, 226, 0.6) rgba(255, 255, 255, 0.15);
     scroll-behavior: smooth;
@@ -211,15 +213,20 @@ canvas {
 
 .planet-card {
     min-width: 130px;
+    max-width: 130px;
+    height: 120px;
     flex-shrink: 0;
     background: rgba(255, 255, 255, 0.12);
     border: 2px solid transparent;
     border-radius: 12px;
-    padding: 12px 8px;
+    padding: 8px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
     color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .planet-card:hover {
@@ -264,8 +271,10 @@ canvas {
 #info-panel {
     position: fixed;
     top: 180px;
-    right: 20px;
+    left: 20px;
     width: 300px;
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
     background: rgba(0, 0, 0, 0.8);
     border-radius: 15px;
     padding: 20px;
