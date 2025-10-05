@@ -194,7 +194,7 @@ function uploadFileToServer() {
                 if (data.redirect) {
                     window.location.href = data.redirect;
                 }
-            }, 20000);
+            }, 5000);
         } else {
             showError(data.message || 'Upload failed');
         }
@@ -236,7 +236,7 @@ function showProcessingSuccess(data) {
             </div>
             <div class="success-message">
                 <p>✨ ${data.message}</p>
-                <p>🚀 You will be redirected to the 3D visualization in 20 seconds...</p>
+                <p>🚀 You will be redirected to the 3D visualization in 5 seconds...</p>
                 <p><b>This will only contain a snippet of the most promising candidates!</b></p>
             </div>
         </div>
