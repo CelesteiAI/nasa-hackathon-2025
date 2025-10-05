@@ -40,15 +40,16 @@ def results(): # Page to display results
 
 @app.route('/api/upload', methods=['POST'])
 def upload(): # Endpoint for file upload
-
-    # 1. Read file from request
-    # 2. Validate file type and format
-    # 3. Save file to server
-    # 4. Return success or error response
-
-    # At some point, we will also trigger ML model processing here
-
     try:
+        # Check if this is a demo data request
+        if request.get_data() == b'demo':
+            return handle_demo_data()
+        
+        # Deal with the demo data request (legacy support)
+        if request.form.get('use_demo_data') == 'true':
+            return handle_demo_data()
+
+        # Regular file upload handling
         if 'file' not in request.files:
             return jsonify({'status': 'error', 'message': 'No file provided'}), 400
         
@@ -60,57 +61,101 @@ def upload(): # Endpoint for file upload
         if not allowed_file(file.filename):
             return jsonify({'status': 'error', 'message': 'Only CSV files are allowed'}), 400
         
-        if file:
-            # Save file to directory
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-            
-            # Validate CSV format and process through ML pipeline
-            try:
-                df = pd.read_csv(filepath, comment='#')  # Handle comment lines like in Kepler data
-                row_count = len(df)
-                col_count = len(df.columns)
+        # Save file to directory
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        # Process the uploaded file
+        return process_uploaded_file(filepath)
                 
-                print(f"CSV uploaded successfully: {filename}")
-                print(f"Rows: {row_count}, Columns: {col_count}")
-                print(f"Columns: {list(df.columns)}")
-                
-                # Process through ML pipeline
-                print("Processing data through ML pipeline...")
-                
-                # Make exoplanet predictions
-                df_with_predictions = predict_exoplanets(df)
-                exoplanet_count = df_with_predictions['is_exoplanet'].sum()
-                print(f"Detected {exoplanet_count} potential exoplanets")
-                
-                # Process habitability analysis
-                df_habitable = process_habitability(df_with_predictions)
-                habitable_count = len(df_habitable[df_habitable['habitability_class'].isin(['highly_habitable', 'potentially_habitable'])])
-                print(f"Found {habitable_count} potentially habitable planets")
-                
-                # Format results for frontend
-                results = format_results_for_frontend(df_habitable)
-                
-                # Save results to global variable for API access
-                app.config['LATEST_RESULTS'] = results
-                
-                print(f"Formatted {len(results)} results for frontend display")
-                
+    except Exception as e:
+        print(f"Error in upload: {str(e)}")
+        return jsonify({'status': 'error', 'message': 'Upload failed. Please try again.'}), 500
+
+
+def handle_demo_data():
+    """Handle demo KOI data processing"""
+    try:
+        demo_file_path = 'data/koi_data.csv'
+        
+        if not os.path.exists(demo_file_path):
+            return jsonify({
+                'status': 'error', 
+                'message': 'Demo data file not found. Please upload your own CSV file.'
+            }), 404
+        
+        print("Loading demo KOI data...")
+        # Process the demo file
+        return process_uploaded_file(demo_file_path, is_demo=True)
+        
+    except Exception as e:
+        print(f"Error loading demo data: {str(e)}")
+        return jsonify({
+            'status': 'error', 
+            'message': 'Failed to load demo data. Please try uploading your own file.'
+        }), 500
+
+
+def process_uploaded_file(filepath, is_demo=False):
+    """Process uploaded or demo file through ML pipeline"""
+    try:
+        # Load the data
+        print(f"Processing file: {filepath}")
+        df = pd.read_csv(filepath, comment='#')  # Handle comment lines like in Kepler data
+        
+        row_count = len(df)
+        col_count = len(df.columns)
+        
+        filename = "Demo KOI Dataset" if is_demo else os.path.basename(filepath)
+        print(f"CSV loaded successfully: {filename}")
+        print(f"Rows: {row_count}, Columns: {col_count}")
+        print(f"Columns: {list(df.columns)[:10]}...")  # Show first 10 columns
+        
+        # Load model if not already loaded
+        if model is None:
+            print("Loading ML model...")
+            if not load_ml_model():
                 return jsonify({
-                    'status': 'success', 
-                    'message': f'Analysis complete! Found {exoplanet_count} exoplanets, {habitable_count} potentially habitable.',
-                    "redirect": "/results",
-                    'exoplanet_count': int(exoplanet_count),
-                    'habitable_count': int(habitable_count),
-                    'total_analyzed': int(row_count)
-                })
-                
-            except Exception as e:
-                print(f"Error processing file: {str(e)}")
-                if os.path.exists(filepath):
-                    os.remove(filepath)  # Clean up invalid file
-                return jsonify({'status': 'error', 'message': f'Error processing file: {str(e)}'}), 400
+                    'status': 'error', 
+                    'message': 'ML model not available. Please check server configuration.'
+                }), 500
+        
+        # Process through ML pipeline
+        print("Processing data through ML pipeline...")
+        
+        # Make exoplanet predictions
+        df_with_predictions = predict_exoplanets(df)
+        exoplanet_count = df_with_predictions['is_exoplanet'].sum()
+        print(f"Detected {exoplanet_count} potential exoplanets")
+        
+        # Process habitability analysis
+        df_habitable = process_habitability(df_with_predictions)
+        habitable_count = len(df_habitable[df_habitable['habitability_class'].isin(['highly_habitable', 'potentially_habitable'])])
+        print(f"Found {habitable_count} potentially habitable planets")
+        
+        # Format results for frontend
+        results = format_results_for_frontend(df_habitable)
+        
+        # Save results to global variable for API access
+        app.config['LATEST_RESULTS'] = results
+        
+        print(f"Formatted {len(results)} results for frontend display")
+        
+        return jsonify({
+            'status': 'success', 
+            'message': f'Analysis complete! Found {exoplanet_count} exoplanets, {habitable_count} potentially habitable.',
+            "redirect": "/results",
+            'exoplanet_count': int(exoplanet_count),
+            'habitable_count': int(habitable_count),
+            'total_analyzed': int(row_count)
+        })
+        
+    except Exception as e:
+        print(f"Error processing file: {str(e)}")
+        if os.path.exists(filepath):
+            os.remove(filepath)  # Clean up invalid file
+        return jsonify({'status': 'error', 'message': f'Error processing file: {str(e)}'}), 400
                 
     except Exception as e:
         return jsonify({'status': 'error', 'message': f'Upload failed: {str(e)}'}), 500
