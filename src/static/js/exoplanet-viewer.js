@@ -474,12 +474,12 @@ async function initialize() {
     setTimeout(() => {
         document.getElementById('loading-screen').classList.add('hidden');
         document.getElementById('planet-wheel').classList.add('visible');
-    }, 2000);
+    }, 1500);
     
     // Zoom in animation
     setTimeout(() => {
         zoomToSolarSystem();
-    }, 2500);
+    }, 2000);
 }
 
 function loadMockData() {
