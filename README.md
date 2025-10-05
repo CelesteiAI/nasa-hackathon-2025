@@ -1,7 +1,7 @@
-# 🌌 CelestAI: Exoplanet Explorer
+# 🌌 CelestiAI: Exoplanet Explorer
 ## Exoplanet Detection Powered by Machine Learning — NASA Space Apps Auckland 2025 (2nd Place)
 
-CelestAI.vip was collaboratively developed with my hackathon team during the NASA Space Apps Challenge 2025 (Auckland), where we placed 2nd overall.
+CelestiAI.vip was collaboratively developed with my hackathon team during the NASA Space Apps Challenge 2025 (Auckland), where we placed 2nd overall.
 As Team Lead and ML Engineer, I led the team, allocated tasks, made key project decisions, and designed the exoplanet detection pipeline — including training the Random Forest model and the habitability classifier. I worked closely with the team to integrate these components into a live web deployment, ensuring a functional end-to-end prototype.
 
 # 👩‍🚀 Team & Roles
@@ -76,7 +76,7 @@ Leading this project as a first-year Computer Science student was an incredible 
 - **Collaboration:** working across specialized roles (backend, frontend, Git)
 - **Execution & Usability:** balancing technical depth with user experience
 
-CelestAI.vip demonstrates the power of **collaboration, technical skill, and leadership**, while making exoplanet science accessible to everyone.
+CelestiAI.vip demonstrates the power of **collaboration, technical skill, and leadership**, while making exoplanet science accessible to everyone.
 
 ---
 
