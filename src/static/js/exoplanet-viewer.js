@@ -60,30 +60,52 @@ function createStars() {
 createStars();
 
 // ============ CENTRAL STAR ============
-const starGeometry = new THREE.SphereGeometry(6, 32, 32);
+// Main sun body with realistic hot surface
+const starGeometry = new THREE.SphereGeometry(8, 64, 64);
 const starMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffd700,
-    emissive: 0xffd700,
+    color: 0xffdd00,
+    emissive: 0xffdd00,
     emissiveIntensity: 1
 });
 const centralStar = new THREE.Mesh(starGeometry, starMaterial);
 scene.add(centralStar);
 
-// Star glow effect
-const glowGeometry = new THREE.SphereGeometry(8, 32, 32);
-const glowMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffaa00,
+// Inner corona (bright yellow-white)
+const corona1Geometry = new THREE.SphereGeometry(10, 32, 32);
+const corona1Material = new THREE.MeshBasicMaterial({
+    color: 0xffee66,
     transparent: true,
-    opacity: 0.3
+    opacity: 0.5
 });
-const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-scene.add(glow);
+const corona1 = new THREE.Mesh(corona1Geometry, corona1Material);
+scene.add(corona1);
+
+// Outer corona (orange-red)
+const corona2Geometry = new THREE.SphereGeometry(12, 32, 32);
+const corona2Material = new THREE.MeshBasicMaterial({
+    color: 0xff8800,
+    transparent: true,
+    opacity: 0.25
+});
+const corona2 = new THREE.Mesh(corona2Geometry, corona2Material);
+scene.add(corona2);
+
+// Solar flares (outermost layer)
+const flareGeometry = new THREE.SphereGeometry(14, 32, 32);
+const flareMaterial = new THREE.MeshBasicMaterial({
+    color: 0xff4400,
+    transparent: true,
+    opacity: 0.15
+});
+const solarFlares = new THREE.Mesh(flareGeometry, flareMaterial);
+scene.add(solarFlares);
 
 // ============ EXOPLANET DATA & MANAGEMENT ============
 const exoplanets = [];
 const orbitLines = [];
 let selectedPlanet = null;
 let showOrbits = true;
+let cameraLocked = false; // Camera tracking state
 
 // Mock exoplanet data (replace with API call later)
 const mockExoplanetData = [
@@ -105,41 +127,83 @@ function createExoplanet(data, index) {
     // Choose color based on habitability and temperature
     let planetColor = data.color;
     if (data.habitability_class === 'highly_habitable') {
-        planetColor = 0x00ff00; // Green for highly habitable
+        planetColor = 0x3a7d44; // Earth-like green-blue
     } else if (data.habitability_class === 'potentially_habitable') {
-        planetColor = 0x66bb6a; // Light green for potentially habitable
+        planetColor = 0x4a8e57; // Light green for potentially habitable
     } else if (data.temperature > 1000) {
-        planetColor = 0xff4444; // Red for hot planets
+        planetColor = 0xdd3333; // Red for hot planets
     } else if (data.temperature < 200) {
-        planetColor = 0x4488ff; // Blue for cold planets
+        planetColor = 0x5588cc; // Blue for cold planets
     } else {
-        planetColor = 0xffaa44; // Orange for temperate planets
+        planetColor = 0xcc8844; // Orange for temperate planets
     }
     
-    // Planet mesh
-    const geometry = new THREE.SphereGeometry(planetSize, 32, 32);
+    // Planet mesh with more realistic materials
+    const geometry = new THREE.SphereGeometry(planetSize, 64, 64);
     const material = new THREE.MeshStandardMaterial({
         color: planetColor,
-        roughness: 0.7,
-        metalness: 0.3,
+        roughness: 0.8,
+        metalness: 0.1,
         emissive: planetColor,
-        emissiveIntensity: data.is_highly_habitable ? 0.4 : 0.2
+        emissiveIntensity: 0.05
     });
     const planet = new THREE.Mesh(geometry, material);
     planet.castShadow = true;
     planet.receiveShadow = true;
 
-    // Add special glow effect for highly habitable planets
-    let glowMesh = null;
-    if (data.is_highly_habitable) {
-        const glowGeometry = new THREE.SphereGeometry(planetSize * 1.5, 32, 32);
-        const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00ff88,
+    // Add animated vegetation/nature for highly habitable planets
+    let vegetationParticles = null;
+    if (data.is_highly_habitable || data.habitability_class === 'highly_habitable') {
+        // Create particle system for growing vegetation
+        const particleCount = 200;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const positions = [];
+        const colors = [];
+        
+        for (let i = 0; i < particleCount; i++) {
+            // Random positions on sphere surface
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            const radius = planetSize * 1.05;
+            
+            positions.push(
+                radius * Math.sin(phi) * Math.cos(theta),
+                radius * Math.sin(phi) * Math.sin(theta),
+                radius * Math.cos(phi)
+            );
+            
+            // Green vegetation colors with variety
+            const greenShade = 0.3 + Math.random() * 0.7;
+            colors.push(0.1, greenShade, 0.1);
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        particlesGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: planetSize * 0.15,
+            vertexColors: true,
             transparent: true,
-            opacity: 0.3
+            opacity: 0.8,
+            sizeAttenuation: true
         });
-        glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
-        scene.add(glowMesh);
+        
+        vegetationParticles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(vegetationParticles);
+        
+        // Also add atmosphere effect for habitable planets
+        const atmosphereGeometry = new THREE.SphereGeometry(planetSize * 1.15, 32, 32);
+        const atmosphereMaterial = new THREE.MeshBasicMaterial({
+            color: 0x88ccff,
+            transparent: true,
+            opacity: 0.15,
+            side: THREE.BackSide
+        });
+        const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+        scene.add(atmosphere);
+        
+        // Store atmosphere reference
+        vegetationParticles.atmosphere = atmosphere;
     }
 
     // Orbit line
@@ -166,7 +230,7 @@ function createExoplanet(data, index) {
     // Store planet data
     const planetData = {
         mesh: planet,
-        glowMesh: glowMesh,
+        vegetationParticles: vegetationParticles,
         distance: data.distance,
         orbitSpeed: 0.005 + (Math.random() * 0.01),
         rotationSpeed: 0.01 + (Math.random() * 0.01),
@@ -247,12 +311,16 @@ function zoomToSolarSystem() {
 // ============ SELECT PLANET ============
 function selectPlanet(planet) {
     selectedPlanet = planet;
+    cameraLocked = true; // Enable camera tracking
+    
+    // Show unlock camera button
+    document.getElementById('unlock-camera').style.display = 'block';
     
     // Update UI
     updateInfoPanel(planet);
     updatePlanetCards();
     
-    // Animate camera to planet
+    // Initial camera position
     const planetWorldPos = planet.mesh.position.clone();
     const offset = new THREE.Vector3(
         Math.cos(planet.angle) * planet.distance * 0.3,
@@ -262,6 +330,16 @@ function selectPlanet(planet) {
     const cameraPos = planetWorldPos.clone().add(offset);
     
     animateCameraTo(cameraPos, planetWorldPos, 1.5);
+}
+
+// ============ UPDATE CAMERA TRACKING ============
+function updateCameraTracking() {
+    if (cameraLocked && selectedPlanet) {
+        // Keep camera focused on the selected planet
+        const planetPos = selectedPlanet.mesh.position.clone();
+        controls.target.copy(planetPos);
+        controls.update();
+    }
 }
 
 // ============ UI FUNCTIONS ============
@@ -444,7 +522,12 @@ function loadExoplanetData(apiData) {
     // Clear existing planets
     exoplanets.forEach(p => {
         scene.remove(p.mesh);
-        if (p.glowMesh) scene.remove(p.glowMesh);
+        if (p.vegetationParticles) {
+            scene.remove(p.vegetationParticles);
+            if (p.vegetationParticles.atmosphere) {
+                scene.remove(p.vegetationParticles.atmosphere);
+            }
+        }
     });
     orbitLines.forEach(l => scene.remove(l));
     exoplanets.length = 0;
@@ -480,6 +563,8 @@ function loadExoplanetData(apiData) {
 // ============ CONTROLS ============
 document.getElementById('reset-view').addEventListener('click', () => {
     selectedPlanet = null;
+    cameraLocked = false; // Unlock camera
+    document.getElementById('unlock-camera').style.display = 'none';
     updatePlanetCards();
     document.getElementById('info-panel').classList.remove('visible');
     zoomToSolarSystem();
@@ -490,6 +575,11 @@ document.getElementById('toggle-orbits').addEventListener('click', () => {
     orbitLines.forEach(line => {
         line.visible = showOrbits;
     });
+});
+
+document.getElementById('unlock-camera').addEventListener('click', () => {
+    cameraLocked = false;
+    document.getElementById('unlock-camera').style.display = 'none';
 });
 
 // ============ ANIMATION LOOP ============
@@ -505,9 +595,26 @@ function animate() {
     // Update camera animation
     updateCameraAnimation(deltaTime);
     
-    // Rotate central star
-    centralStar.rotation.y += 0.001;
-    glow.rotation.y -= 0.0005;
+    // Update camera tracking
+    updateCameraTracking();
+    
+    // Rotate central star with pulsing effect
+    centralStar.rotation.y += 0.002;
+    corona1.rotation.y -= 0.0015;
+    corona1.rotation.x += 0.0005;
+    corona2.rotation.y += 0.001;
+    corona2.rotation.x -= 0.0005;
+    
+    // Animate solar flares
+    solarFlares.rotation.y -= 0.002;
+    solarFlares.rotation.z += 0.001;
+    const flareIntensity = 0.15 + 0.1 * Math.sin(currentTime * 0.005);
+    solarFlares.material.opacity = flareIntensity;
+    
+    // Pulse coronas
+    const coronaPulse = 0.4 + 0.15 * Math.sin(currentTime * 0.003);
+    corona1.material.opacity = coronaPulse;
+    corona2.material.opacity = coronaPulse * 0.5;
     
     // Update exoplanets
     exoplanets.forEach(planet => {
@@ -516,12 +623,21 @@ function animate() {
         planet.mesh.position.x = Math.cos(planet.angle) * planet.distance;
         planet.mesh.position.z = Math.sin(planet.angle) * planet.distance;
         
-        // Update glow mesh position if it exists
-        if (planet.glowMesh) {
-            planet.glowMesh.position.copy(planet.mesh.position);
-            // Animate glow opacity
-            const glowIntensity = 0.3 + 0.2 * Math.sin(currentTime * 0.003);
-            planet.glowMesh.material.opacity = glowIntensity;
+        // Update vegetation particles if they exist
+        if (planet.vegetationParticles) {
+            planet.vegetationParticles.position.copy(planet.mesh.position);
+            planet.vegetationParticles.rotation.copy(planet.mesh.rotation);
+            
+            // Animate vegetation growth (pulsing effect)
+            const growthPulse = 0.8 + 0.2 * Math.sin(currentTime * 0.002 + planet.angle);
+            planet.vegetationParticles.material.opacity = growthPulse;
+            
+            // Update atmosphere if it exists
+            if (planet.vegetationParticles.atmosphere) {
+                planet.vegetationParticles.atmosphere.position.copy(planet.mesh.position);
+                const atmoPulse = 0.15 + 0.05 * Math.sin(currentTime * 0.004);
+                planet.vegetationParticles.atmosphere.material.opacity = atmoPulse;
+            }
         }
         
         // Self rotation
