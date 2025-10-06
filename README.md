@@ -9,7 +9,7 @@ As Team Lead and ML Engineer, I led the team, allocated tasks, made key project 
 |------|--------------------|
 | **Aayush Prakash** | Team Lead / ML Engineer — led the team, allocated tasks, made project decisions, designed pipeline, trained Random Forest model and habitability classifier |
 | **Mingming Zhang** | ML Support — cleaned code, preprocessed data, assisted with model training |
-| **Jonty** | Backend & Git — managed Git workflow, handled technical Git issues, built Flask API bridging backend and frontend |
+| **Jonty McBreen-Graham** | Backend & Git — managed Git workflow, handled technical Git issues, built Flask API bridging backend and frontend |
 | **Dmitrii Gomazenkov** | Frontend & Visualization — developed UI using Three.js, implemented interactive 3D visualizations |
 
 ---           
