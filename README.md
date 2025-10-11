@@ -9,7 +9,7 @@ As Team Lead and ML Engineer, I led the team, allocated tasks, made key project 
 |------|--------------------|
 | **Aayush Prakash** | Team Lead / ML Engineer — led the team, allocated tasks, made project decisions, designed pipeline, trained Random Forest model and habitability classifier |
 | **Mingming Zhang** | ML Support — cleaned code, preprocessed data, assisted with model training |
-| **Jonty McBreen-Graham** | Backend & Git — managed Git workflow, handled technical Git issues, built Flask API bridging backend and frontend |
+| **Jonty McBreen-Graham** | Backend, Git & Docker — managed Git workflow, handled technical Git issues, built Flask API bridging back & frontends and built & deployed docker container |
 | **Dmitrii Gomazenkov** | Frontend & Visualization — developed UI using Three.js, implemented interactive 3D visualizations |
 
 ---           
@@ -38,10 +38,10 @@ As Team Lead and ML Engineer, I led the team, allocated tasks, made key project 
 
 **Docker (recommended):**  
 ```bash
-git clone https://github.com/your-username/nasa-hackathon-2025.git
+git clone https://github.com/CelesteiAI/nasa-hackathon-2025.git
 cd nasa-hackathon-2025
 docker build -t nasa-hackathon-2025 .
-docker run -d -p 8000:5000 --name nasa-app nasa-hackathon-2025
+docker run -d -p 8080 --name celesteiai-nasa-app nasa-hackathon-2025
 ```
 
 <br>
